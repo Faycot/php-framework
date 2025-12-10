@@ -6,7 +6,7 @@ use App\Lib\Http\Router;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    
+    echo 'in';
     $request = new Request();
     $response = Router::route($request);
 

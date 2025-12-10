@@ -4,11 +4,6 @@
     "method": "GET",
     "controller": "TestController"
   },
-  {
-    "path": "/foobarr",
-    "method": "GET",
-    "controller": "FoobarrController"
-  },
 
   {
     "path": "/contact",
@@ -19,12 +14,24 @@
   {
     "path": "/contact",
     "method": "GET",
-    "controller": "GetContactController"
+    "controller": "GetContactsController"
   },
 
   {
-    "path": "/contact/",
+    "path": "/contact",
     "method": "GET",
     "controller": "GetSpecificContactController"
+  },
+
+  {
+    "path": "/contact",
+    "method": "PATCH",
+    "controller": "UpdateContactController"
+  },
+
+  {
+    "path": "/contact",
+    "method": "DELETE",
+    "controller": "DeleteContactController"
   }
 ]

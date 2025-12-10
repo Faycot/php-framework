@@ -6,52 +6,36 @@ use App\Lib\Controllers\AbstractController;
 use App\Lib\Http\Request;
 use App\Lib\Http\Response;
 use App\Entities\Contact;
+use App\Managers\ContactManager;
 
-class PostContactController extends AbstractController
-{
-    public function process(Request $request): Response
-    {
-        if ($request->getMethod() !== "POST") {
-            return new Response(json_encode(["error" => "Method not allowed"]), 405, ["Content-Type" => "application/json"]);
+class PostContactController extends AbstractController {
+
+    
+    public function process(Request $request): Response {
+        if ($request->getMethod() !== 'POST') {
+            return new Response(
+                json_encode(['error' => 'Method not allowed']),
+                405,
+                ['Content-Type' => 'application/json']
+            );
         }
 
-        $headers = $request->getHeaders();
-        if (($headers["Content-Type"] ?? null) !== "application/json") {
-            return new Response(json_encode(["error" => "Invalid content type"]), 400, ["Content-Type" => "application/json"]);
+        $requestData = json_decode(file_get_contents('php://input'), true);
+
+        $contactManager = new ContactManager();
+        $validation = $contactManager->validate($requestData, ['email', 'subject', 'message']);
+
+        if ($validation) {
+            return $validation;
         }
 
-        $raw = file_get_contents("php://input");
-        $data = json_decode($raw, true);
-        if (!$data) {
-            return new Response(json_encode(["error" => "Invalid JSON"]), 400, ["Content-Type" => "application/json"]);
-        }
+        $contact = new Contact($requestData['email'], $requestData['subject'], $requestData['message']);
+        $filename = $contactManager->saveContact($contact);
 
-        $allowed = ["email", "subject", "message"];
-        foreach ($data as $key => $value) {
-            if (!in_array($key, $allowed)) {
-                return new Response(json_encode(["error" => "Invalid property: $key"]), 400, ["Content-Type" => "application/json"]);
-            }
-        }
-
-        if (!isset($data["email"], $data["subject"], $data["message"])) {
-            return new Response(json_encode(["error" => "Missing required fields"]), 400, ["Content-Type" => "application/json"]);
-        }
-
-        $timestamp = time();
-
-        $contact = new Contact(
-            $data["email"],
-            $data["subject"],
-            $data["message"],
-            $timestamp,
-            $timestamp
-        );
-
-        $filename = $timestamp . "_" . $contact->getEmail() . ".json";
-        $path = __DIR__ . "/../../var/contacts/" . $filename;
-
-        file_put_contents($path, json_encode($contact->toArray(), JSON_PRETTY_PRINT));
-
-        return new Response(json_encode(["file" => $filename]), 201, ["Content-Type" => "application/json"]);
+        return new Response(  json_encode(['file' => $filename]),
+        201,
+        ['Content-Type' => 'application/json']
+    );
+    
     }
 }

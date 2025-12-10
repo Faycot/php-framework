@@ -2,90 +2,55 @@
 
 namespace App\Entities;
 
-class Contact
-{
-    private string $email;
-    private string $subject;
-    private string $message;
-    private int $dateOfCreation;
-    private int $dateOfLastUpdate;
-
-    public function __construct(
-        string $email,
-        string $subject,
-        string $message,
-        int $dateOfCreation,
-        int $dateOfLastUpdate
-    ) {
+class Contact extends AbstractEntity{
+    public string $email;
+    public string $subject;
+    public string $message;
+    public int $DateOfCreation;
+    public int $DateOfLastUpdate;
+        public function __construct($email, $subject, $message){
         $this->email = $email;
         $this->subject = $subject;
-        $this->message = $message;
-        $this->dateOfCreation = $dateOfCreation;
-        $this->dateOfLastUpdate = $dateOfLastUpdate;
-    }
+        $this->message = $message;}
 
-    public function getEmail(): string
-    {
+    public function getEmail(){
         return $this->email;
     }
 
-    public function getSubject(): string
-    {
+    public function setEmail($email){
+        $this->email = $email;
+    }   
+
+    public function getSubject(){
         return $this->subject;
     }
 
-    public function getMessage(): string
-    {
+    public function setSubject($subject){
+        $this->subject = $subject;
+    }
+
+    public function getMessage(){
         return $this->message;
     }
 
-    public function getDateOfCreation(): int
-    {
-        return $this->dateOfCreation;
+    public function setMessage($message){    
+        $this->message = $message;
     }
 
-    public function getDateOfLastUpdate(): int
-    {
-        return $this->dateOfLastUpdate;
+    public function getDateOfCreation(){
+        return $this->DateOfCreation;
+    }   
+
+    public function setDateOfCreation($DateOfCreation){
+        $this->DateOfCreation = $DateOfCreation;
     }
 
-    public function toArray(): array
-    {
-        return [
-            "email"            => $this->email,
-            "subject"          => $this->subject,
-            "message"          => $this->message,
-            "dateOfCreation"   => $this->dateOfCreation,
-            "dateOfLastUpdate" => $this->dateOfLastUpdate,
-        ];
+    public function getDateOfLastUpdate(){
+        return $this->DateOfLastUpdate;
     }
 
-    public static function fromArray(array $data): self
-    {
-        return new self(
-            $data["email"],
-            $data["subject"],
-            $data["message"],
-            $data["dateOfCreation"],
-            $data["dateOfLastUpdate"]
-        );
+    public function setDateOfLastUpdate($DateOfLastUpdate){
+        $this->DateOfLastUpdate = $DateOfLastUpdate;
     }
 
-    public static function loadAll(): array
-    {
-        $directory = __DIR__ . "/../../var/contacts/";
-        $files = glob($directory . "*.json");
-
-        $contacts = [];
-
-        foreach ($files as $file) {
-            $json = json_decode(file_get_contents($file), true);
-            if ($json) {
-                $contact = Contact::fromArray($json);
-                $contacts[] = $contact->toArray();
-            }
-        }
-
-        return $contacts;
-    }
 }
