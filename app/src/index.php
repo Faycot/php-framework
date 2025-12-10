@@ -5,15 +5,9 @@ use App\Lib\Http\Router;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-try {
-    echo 'in';
-    $request = new Request();
-    $response = Router::route($request);
+$request = new Request();
 
-    header($response->getHeadersAsString());
-    http_response_code($response->getStatus());
-    echo $response->getContent();
-    exit();
-} catch(\Exception $e) {
-    echo $e->getMessage();
-}
+$router = new Router();
+$response = $router->route($request);
+
+echo $response->getContent();

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Lib\Controllers\AbstractController;
 use App\Lib\Http\Request;
 use App\Lib\Http\Response;
 use App\Managers\ContactManager;
